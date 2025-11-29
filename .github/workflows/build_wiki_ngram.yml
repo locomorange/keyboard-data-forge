@@ -5,10 +5,12 @@ on:
   push:
     paths:
       - 'crates/wiki-ngram/**'
+      - 'crates/mozc-dict-gen/**'
       - '.github/workflows/build_wiki_ngram.yml'
 
 jobs:
-  build:
+  build-mozc-dict:
+    name: Build Mozc Dictionary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,14 +21,43 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build and Run Generation
+      - name: Build and Run Mozc Dict Generation
         run: |
-          # Placeholder: In reality, this would download the dump and run the tool
-          cd crates/wiki-ngram
-          cargo run --release -- --dummy-mode
-        
-      - name: Upload Artifact
+          cargo run -p mozc-dict-gen --release
+
+      - name: Upload Mozc Dictionary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/system.dic.zst
+          retention-days: 1
+
+  build-wiki-ngram:
+    name: Build Wikipedia N-gram FST
+    needs: build-mozc-dict
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+
+      - name: Build and Run Wiki N-gram Generation
+        run: |
+          cargo run -p wiki-ngram --release
+
+      - name: Upload Wiki N-gram Artifact
         uses: actions/upload-artifact@v4
         with:
           name: wiki-ngram-fst
-          path: crates/wiki-ngram/output/wiki.fst
+          path: output/wiki-ngrams.fst
+
