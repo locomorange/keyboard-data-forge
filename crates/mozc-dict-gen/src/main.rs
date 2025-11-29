@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::collections::HashMap;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 const MOZC_REPO_URL: &str = "https://github.com/google/mozc/archive/refs/heads/master.tar.gz";
 
