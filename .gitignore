@@ -8,3 +8,5 @@ __pycache__
 .env
 /downloads
 /output
+/mozc_src
+*.log
