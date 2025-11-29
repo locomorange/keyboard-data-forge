@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'scripts/**'
+      - 'crates/mozc-dict-gen/**'
       - '.github/workflows/build_mozc_dict.yml'
 
 jobs:
@@ -27,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mozc-vibrato-dict
-          path: output/mozc.dict
+          path: output/system.dic.zst
