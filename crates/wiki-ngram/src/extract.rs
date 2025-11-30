@@ -61,7 +61,7 @@ pub fn process_wikipedia(
                         }
 
                         if let Some(l) = limit {
-                            if article_count >= l {
+                            if article_count >= l as u64 {
                                 break;
                             }
                         }
