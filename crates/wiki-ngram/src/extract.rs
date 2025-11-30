@@ -17,6 +17,7 @@ pub fn process_wikipedia(
     tokenizer: &Tokenizer,
     max_ngram: usize,
     limit: Option<usize>,
+    min_frequency: usize,
 ) -> Result<HashMap<String, usize>> {
     let file = File::open(wiki_bz2_path)?;
     let decoder = BzDecoder::new(BufReader::new(file));
@@ -65,9 +66,8 @@ pub fn process_wikipedia(
                         }
                         
                         // Prune periodically to prevent OOM
-                        // Threshold: 5 million entries (approx 500MB-1GB depending on string length)
                         if article_count % 100000 == 0 {
-                             crate::ngram::prune_ngrams(&mut ngram_counts, 5_000_000);
+                             crate::ngram::prune_ngrams(&mut ngram_counts, 5_000_000, min_frequency);
                         }
 
                         if let Some(l) = limit {

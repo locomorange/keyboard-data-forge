@@ -23,20 +23,16 @@ pub fn extract_ngrams_from_tokens(
     }
 }
 
-pub fn prune_ngrams(ngram_counts: &mut HashMap<String, usize>, threshold_size: usize) {
+pub fn prune_ngrams(ngram_counts: &mut HashMap<String, usize>, threshold_size: usize, min_freq: usize) {
     if ngram_counts.len() <= threshold_size {
         return;
     }
 
     log::info!("Pruning N-grams... (Current size: {})", ngram_counts.len());
     
-    // Remove entries with frequency 1
-    // This is a simple heuristic to save memory. 
-    // Ideally we would use a more sophisticated approach like Count-Min Sketch,
-    // but for this use case, removing hapax legomena (once-occurring ngrams) is usually safe enough
-    // as we only care about high-frequency patterns for prediction.
+    // Remove entries with frequency <= min_freq
     let before_len = ngram_counts.len();
-    ngram_counts.retain(|_, &mut count| count > 1);
+    ngram_counts.retain(|_, &mut count| count > min_freq);
     let after_len = ngram_counts.len();
     
     log::info!("Pruned {} entries. New size: {}", before_len - after_len, after_len);

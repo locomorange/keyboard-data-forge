@@ -78,7 +78,7 @@ fn main() -> Result<()> {
 
     // Step 3: Extract text and tokenize
     log::info!("Extracting and tokenizing Wikipedia articles...");
-    let ngram_counts = extract::process_wikipedia(&wiki_path, &tokenizer, args.max_ngram, args.limit)?;
+    let ngram_counts = extract::process_wikipedia(&wiki_path, &tokenizer, args.max_ngram, args.limit, args.min_frequency)?;
 
     // Step 4: Filter and calculate log scores
     log::info!("Filtering N-grams (min frequency: {})...", args.min_frequency);
