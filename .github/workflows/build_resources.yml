@@ -57,8 +57,39 @@ jobs:
       - name: Build Wiki N-grams
         run: cargo run -p wiki-ngram --release -- --min-frequency 50
 
+      - name: Run verification tests
+        run: cargo test -p test-resources
+
       - name: Upload Wiki N-gram FST
         uses: actions/upload-artifact@v4
         with:
           name: wiki-ngram-fst
           path: output/wiki-ngrams.fst
+
+  test-resources:
+    name: Test Resources
+    needs: build-wiki-ngram
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+
+      - name: Download Wiki N-gram Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wiki-ngram-fst
+          path: output/
+
+      - name: Run All Tests
+        run: cargo test -p test-resources
