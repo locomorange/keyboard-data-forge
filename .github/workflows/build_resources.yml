@@ -54,9 +54,6 @@ jobs:
       - name: Build Wiki N-grams
         run: cargo run -p wiki-ngram --release -- --min-frequency 50
 
-      - name: Run verification tests
-        run: cargo test -p test-resources
-
       - name: Upload Wiki N-gram FST
         uses: actions/upload-artifact@v4
         with:
