@@ -1,0 +1,91 @@
+name: Test Resources
+
+on:
+  workflow_run:
+    workflows: ["Build Resources"]
+    types:
+      - completed
+
+jobs:
+  test-mozc-dict:
+    name: Test Mozc Dictionary
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Run Mozc Dictionary Tests
+        run: |
+          cargo test -p test-resources --test mozc_dict_test -- --nocapture
+
+  test-wiki-ngram:
+    name: Test Wiki N-gram FST
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Wiki N-gram Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wiki-ngram-fst
+          path: output/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Run Wiki N-gram Tests
+        run: |
+          cargo test -p test-resources --test ngram_fst_test -- --nocapture
+
+  test-all-resources:
+    name: Test All Resources Together
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Download Wiki N-gram Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wiki-ngram-fst
+          path: output/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Run All Tests
+        run: |
+          cargo test -p test-resources -- --nocapture

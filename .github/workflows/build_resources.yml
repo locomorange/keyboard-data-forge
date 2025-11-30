@@ -51,13 +51,14 @@ jobs:
           name: mozc-vibrato-dict
           path: output/
 
-      - name: Build and Run Wiki N-gram Generation
-        run: |
-          cargo run -p wiki-ngram --release
+      - name: Build Wiki N-grams
+        run: cargo run -p wiki-ngram --release -- --min-frequency 50
 
-      - name: Upload Wiki N-gram Artifact
+      - name: Run verification tests
+        run: cargo test -p test-resources
+
+      - name: Upload Wiki N-gram FST
         uses: actions/upload-artifact@v4
         with:
           name: wiki-ngram-fst
           path: output/wiki-ngrams.fst
-

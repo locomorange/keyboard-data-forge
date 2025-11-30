@@ -11,6 +11,26 @@ This repository automates the generation of Japanese NLP resources for smartphon
 
 Resources are built automatically via GitHub Actions and available as artifacts.
 
+## Testing
+
+To test the generated resources locally:
+
+1. Generate the resources:
+   ```bash
+   cargo run -p mozc-dict-gen --release
+   cargo run -p wiki-ngram --release
+   ```
+
+2. Run the tests:
+   ```bash
+   cargo test -p test-resources
+   ```
+
+The tests verify:
+- Mozc dictionary can be loaded and used for tokenization
+- N-gram FST can be loaded and queried for frequency scores
+- Common Japanese phrases are correctly handled
+
 ## License
 
 ### Code
