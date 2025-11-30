@@ -8,6 +8,9 @@ on:
       - 'crates/mozc-dict-gen/**'
       - '.github/workflows/build_resources.yml'
 
+env:
+  RUST_LOG: info
+
 jobs:
   build-mozc-dict:
     name: Build Mozc Dictionary
