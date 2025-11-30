@@ -47,6 +47,11 @@ pub fn download_wikipedia(cache_dir: &Path) -> Result<PathBuf> {
         file.write_all(&buffer[..bytes_read])?;
         downloaded += bytes_read as u64;
         pb.set_position(downloaded);
+
+        // Log every 50MB for CI visibility
+        if downloaded > 0 && downloaded % (50 * 1024 * 1024) < bytes_read as u64 {
+            log::info!("Downloaded {} MB / {} MB", downloaded / 1024 / 1024, total_size / 1024 / 1024);
+        }
     }
 
     pb.finish_with_message("Download complete");

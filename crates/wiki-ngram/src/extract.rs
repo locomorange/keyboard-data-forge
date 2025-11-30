@@ -63,6 +63,12 @@ pub fn process_wikipedia(
                         if article_count % 10000 == 0 {
                             log::info!("Processed {} articles, {} unique N-grams", article_count, ngram_counts.len());
                         }
+                        
+                        // Prune periodically to prevent OOM
+                        // Threshold: 5 million entries (approx 500MB-1GB depending on string length)
+                        if article_count % 100000 == 0 {
+                             crate::ngram::prune_ngrams(&mut ngram_counts, 5_000_000);
+                        }
 
                         if let Some(l) = limit {
                             if article_count >= l as u64 {
