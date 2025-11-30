@@ -1,4 +1,4 @@
-name: Build Wikipedia N-gram FST
+name: Build Resources
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     paths:
       - 'crates/wiki-ngram/**'
       - 'crates/mozc-dict-gen/**'
-      - '.github/workflows/build_wiki_ngram.yml'
+      - '.github/workflows/build_resources.yml'
 
 jobs:
   build-mozc-dict:

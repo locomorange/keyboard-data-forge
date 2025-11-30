@@ -59,6 +59,10 @@ pub fn process_wikipedia(
                             pb.set_position(article_count);
                             pb.set_message(format!("{}", ngram_counts.len()));
                         }
+                        
+                        if article_count % 10000 == 0 {
+                            log::info!("Processed {} articles, {} unique N-grams", article_count, ngram_counts.len());
+                        }
 
                         if let Some(l) = limit {
                             if article_count >= l as u64 {
