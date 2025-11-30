@@ -16,6 +16,7 @@ pub fn process_wikipedia(
     wiki_bz2_path: &Path,
     tokenizer: &Tokenizer,
     max_ngram: usize,
+    limit: Option<usize>,
 ) -> Result<HashMap<String, usize>> {
     let file = File::open(wiki_bz2_path)?;
     let decoder = BzDecoder::new(BufReader::new(file));
@@ -57,6 +58,12 @@ pub fn process_wikipedia(
                         if article_count % 1000 == 0 {
                             pb.set_position(article_count);
                             pb.set_message(format!("{}", ngram_counts.len()));
+                        }
+
+                        if let Some(l) = limit {
+                            if article_count >= l {
+                                break;
+                            }
                         }
                     }
                 }
