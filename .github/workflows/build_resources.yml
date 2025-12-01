@@ -90,3 +90,6 @@ jobs:
 
       - name: Run All Tests
         run: cargo test -p test-resources
+        env:
+          MOZC_DICT_PATH: ${{ github.workspace }}/output/system.dic.zst
+          WIKI_NGRAM_FST_PATH: ${{ github.workspace }}/output/wiki-ngrams.fst

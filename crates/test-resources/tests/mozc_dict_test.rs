@@ -2,12 +2,18 @@ use std::fs::File;
 use std::io::BufReader;
 use vibrato::{Dictionary, Tokenizer};
 
-const DICT_PATH: &str = "output/system.dic.zst";
+use std::path::PathBuf;
+
+fn get_dict_path() -> PathBuf {
+    std::env::var("MOZC_DICT_PATH")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from("../../output/system.dic.zst"))
+}
 
 #[test]
 fn test_load_mozc_dictionary() {
-    let file = File::open(DICT_PATH)
-        .expect("Failed to open dictionary file. Run 'cargo run -p mozc-dict-gen --release' first.");
+    let file = File::open(get_dict_path())
+        .expect("Failed to open dictionary file. Set MOZC_DICT_PATH env var or run 'cargo run -p mozc-dict-gen --release' first.");
     let reader = BufReader::new(file);
     let decoder = zstd::stream::read::Decoder::new(reader)
         .expect("Failed to create zstd decoder");
@@ -20,8 +26,8 @@ fn test_load_mozc_dictionary() {
 
 #[test]
 fn test_tokenize_common_phrases() {
-    let file = File::open(DICT_PATH)
-        .expect("Failed to open dictionary file. Run 'cargo run -p mozc-dict-gen --release' first.");
+    let file = File::open(get_dict_path())
+        .expect("Failed to open dictionary file. Set MOZC_DICT_PATH env var or run 'cargo run -p mozc-dict-gen --release' first.");
     let reader = BufReader::new(file);
     let decoder = zstd::stream::read::Decoder::new(reader)
         .expect("Failed to create zstd decoder");
@@ -54,8 +60,8 @@ fn test_tokenize_common_phrases() {
 
 #[test]
 fn test_tokenize_edge_cases() {
-    let file = File::open(DICT_PATH)
-        .expect("Failed to open dictionary file. Run 'cargo run -p mozc-dict-gen --release' first.");
+    let file = File::open(get_dict_path())
+        .expect("Failed to open dictionary file. Set MOZC_DICT_PATH env var or run 'cargo run -p mozc-dict-gen --release' first.");
     let reader = BufReader::new(file);
     let decoder = zstd::stream::read::Decoder::new(reader)
         .expect("Failed to create zstd decoder");
@@ -83,8 +89,8 @@ fn test_tokenize_edge_cases() {
 
 #[test]
 fn test_tokenization_produces_features() {
-    let file = File::open(DICT_PATH)
-        .expect("Failed to open dictionary file. Run 'cargo run -p mozc-dict-gen --release' first.");
+    let file = File::open(get_dict_path())
+        .expect("Failed to open dictionary file. Set MOZC_DICT_PATH env var or run 'cargo run -p mozc-dict-gen --release' first.");
     let reader = BufReader::new(file);
     let decoder = zstd::stream::read::Decoder::new(reader)
         .expect("Failed to create zstd decoder");

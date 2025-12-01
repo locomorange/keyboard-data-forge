@@ -2,12 +2,18 @@ use fst::{IntoStreamer, Map, Streamer};
 use memmap2::Mmap;
 use std::fs::File;
 
-const FST_PATH: &str = "../../output/wiki-ngrams.fst";
+use std::path::PathBuf;
+
+fn get_fst_path() -> PathBuf {
+    std::env::var("WIKI_NGRAM_FST_PATH")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from("../../output/wiki-ngrams.fst"))
+}
 
 #[test]
 fn test_load_ngram_fst() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
@@ -19,8 +25,8 @@ fn test_load_ngram_fst() {
 
 #[test]
 fn test_query_common_ngrams() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
@@ -50,8 +56,8 @@ fn test_query_common_ngrams() {
 
 #[test]
 fn test_fst_scores_are_reasonable() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
@@ -73,8 +79,8 @@ fn test_fst_scores_are_reasonable() {
 
 #[test]
 fn test_fst_contains_entries() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
@@ -97,8 +103,8 @@ fn test_fst_contains_entries() {
 
 #[test]
 fn test_fst_iteration() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
@@ -135,8 +141,8 @@ fn test_fst_iteration() {
 
 #[test]
 fn test_predictive_search() {
-    let file = File::open(FST_PATH)
-        .expect("Failed to open FST file. Run 'cargo run -p wiki-ngram --release' first.");
+    let file = File::open(get_fst_path())
+        .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
     let fst = Map::new(mmap)
