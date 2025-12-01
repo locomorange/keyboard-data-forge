@@ -17,7 +17,7 @@ fn test_load_mozc_dictionary() {
     let reader = BufReader::new(file);
     let decoder = zstd::stream::read::Decoder::new(reader)
         .expect("Failed to create zstd decoder");
-    let dict = Dictionary::read(decoder)
+    let _dict = Dictionary::read(decoder)
         .expect("Failed to read dictionary");
     
     // If we got here, the dictionary loaded successfully

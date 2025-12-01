@@ -16,7 +16,7 @@ fn test_load_ngram_fst() {
         .expect("Failed to open FST file. Set WIKI_NGRAM_FST_PATH env var or run 'cargo run -p wiki-ngram --release' first.");
     let mmap = unsafe { Mmap::map(&file) }
         .expect("Failed to mmap FST file");
-    let fst = Map::new(mmap)
+    let _fst = Map::new(mmap)
         .expect("Failed to load FST");
     
     // If we got here, the FST loaded successfully
