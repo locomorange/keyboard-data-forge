@@ -1,0 +1,95 @@
+name: Build Resources
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'crates/wiki-ngram/**'
+      - 'crates/mozc-dict-gen/**'
+      - '.github/workflows/build_resources.yml'
+
+env:
+  RUST_LOG: info
+
+jobs:
+  build-mozc-dict:
+    name: Build Mozc Dictionary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build and Run Mozc Dict Generation
+        run: |
+          cargo run -p mozc-dict-gen --release
+
+      - name: Upload Mozc Dictionary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/system.dic.zst
+          retention-days: 1
+
+  build-wiki-ngram:
+    name: Build Wikipedia N-gram FST
+    needs: build-mozc-dict
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+
+      - name: Build Wiki N-grams
+        run: cargo run -p wiki-ngram --release -- --min-frequency 50
+
+      - name: Upload Wiki N-gram FST
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiki-ngram-fst
+          path: output/wiki-ngrams.fst
+
+  test-resources:
+    name: Test Resources
+    needs: build-wiki-ngram
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Download Mozc Dictionary Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mozc-vibrato-dict
+          path: output/
+
+      - name: Download Wiki N-gram Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: wiki-ngram-fst
+          path: output/
+
+      - name: Run All Tests
+        run: cargo test -p test-resources -- --nocapture
+        env:
+          MOZC_DICT_PATH: ${{ github.workspace }}/output/system.dic.zst
+          WIKI_NGRAM_FST_PATH: ${{ github.workspace }}/output/wiki-ngrams.fst

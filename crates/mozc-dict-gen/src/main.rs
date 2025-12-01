@@ -258,6 +258,12 @@ fn generate_unk_def(output_path: &Path, id_map: &HashMap<u16, String>) -> Result
     writeln!(file, "KANJI,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
     writeln!(file, "ALPHA,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
     writeln!(file, "NUMERIC,{},{},5000,名詞,数,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "HIRAGANA,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "KATAKANA,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "KANJINUMERIC,{},{},5000,名詞,数,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "GREEK,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "CYRILLIC,{},{},5000,名詞,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
+    writeln!(file, "SYMBOL,{},{},5000,記号,一般,*,*,*,*,*,*,*", noun_id, noun_id)?;
     
     Ok(())
 }

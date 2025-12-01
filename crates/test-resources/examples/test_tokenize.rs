@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tokenizer = Tokenizer::new(dict);
     let mut worker = tokenizer.new_worker();
     
-    let text = "京都東京都";
+    let text = "今日はいい天気です";
     worker.reset_sentence(text);
     worker.tokenize();
     
