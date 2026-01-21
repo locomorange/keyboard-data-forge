@@ -33,7 +33,7 @@ jobs:
         with:
           name: mozc-vibrato-dict
           path: output/system.dic.zst
-          retention-days: 1
+          retention-days: 90
 
   build-wiki-ngram:
     name: Build Wikipedia N-gram FST
@@ -62,6 +62,7 @@ jobs:
         with:
           name: wiki-ngram-fst
           path: output/wiki-ngrams.fst
+          retention-days: 90
 
   test-resources:
     name: Test Resources
