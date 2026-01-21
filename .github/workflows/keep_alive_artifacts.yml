@@ -9,12 +9,26 @@ on:
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
+      - name: Get latest successful run ID of Build Resources
+        id: get-run-id
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RUN_ID=$(gh run list --workflow "build_resources.yml" --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+
       - name: Download Mozc Dictionary Artifact
         uses: actions/download-artifact@v4
         with:
           name: mozc-vibrato-dict
           path: output/
+          run-id: ${{ steps.get-run-id.outputs.run_id }}
+          github-token: ${{ github.token }}
+        if: steps.get-run-id.outputs.run_id != ''
         continue-on-error: true
 
       - name: Download Wiki N-gram Artifact
@@ -22,6 +36,9 @@ jobs:
         with:
           name: wiki-ngram-fst
           path: output/
+          run-id: ${{ steps.get-run-id.outputs.run_id }}
+          github-token: ${{ github.token }}
+        if: steps.get-run-id.outputs.run_id != ''
         continue-on-error: true
 
       - name: Upload Mozc Dictionary Artifact
