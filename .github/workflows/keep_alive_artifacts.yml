@@ -18,7 +18,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          RUN_ID=$(gh run list --workflow "build_resources.yml" --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+          RUN_ID=$(gh run list --workflow "build_resources.yml" --status success --limit 1 --json databaseId --jq '.[0].databaseId' --repo ${{ github.repository }})
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
 
       - name: Download Mozc Dictionary Artifact
